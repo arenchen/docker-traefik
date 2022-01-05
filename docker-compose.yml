@@ -1,0 +1,46 @@
+version: "3"
+services:
+  traefik:
+    container_name: traefik
+    image: traefik:latest
+    ports:
+      - 80:80
+      - 443:443
+      - 1883:1883   # MQTT TCP
+      - 3000:3000   # Grafana
+      - 3306:3306   # MySQL
+      - 3307:3306   # MySQL-Slave
+      - 5432:5432   # PostgreSQL
+      - 5433:5432   # PostgreSQL-Slave
+      - 5601:5601   # Kibana
+      - 5672:5672   # RabbitMQ
+      - 6379:6379   # Redis
+      - 8080:8080
+      - 8083:8083   # EMQX WS
+      - 8084:8084   # EMQX WSS
+      - 8086:8086   # InfluxDb
+      - 8200:8200   # APM
+      - 8883:8883   # MQTT TCP SSL
+      - 9090:9090   # Prometheus
+      - 9092:9092   # Kafka
+      - 9093:9093   # Kafka Controller
+      - 9100:9100   # Node Exporter
+      - 9200:9200   # Elasticsearch
+      - 9300:9300   # Elasticsearch Transport
+      - 18083:18083 # EMQX Admin
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.toml:/etc/traefik/traefik.toml
+      - conf:/etc/traefik/conf
+    restart: unless-stopped
+volumes:
+  conf:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ~/DockerVolumes/traefik/conf
+networks:
+  default:
+    external:
+      name: network-dev
